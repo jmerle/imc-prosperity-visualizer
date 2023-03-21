@@ -99,9 +99,11 @@ export function VisualizerPage(): JSX.Element {
         <Grid.Col span={12}>
           <SubmissionLogsCard />
         </Grid.Col>
-        <Grid.Col span={12}>
-          <AlgorithmSummaryCard />
-        </Grid.Col>
+        {algorithm.summary && (
+          <Grid.Col span={12}>
+            <AlgorithmSummaryCard />
+          </Grid.Col>
+        )}
       </Grid>
     </div>
   );

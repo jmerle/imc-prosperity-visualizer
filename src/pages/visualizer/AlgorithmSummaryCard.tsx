@@ -8,7 +8,8 @@ import { PrismScrollArea } from '../base/PrismScrollArea';
 import { VisualizerCard } from './VisualizerCard';
 
 export function AlgorithmSummaryCard(): JSX.Element {
-  const { summary } = useStore(state => state.algorithm)!;
+  const algorithm = useStore(state => state.algorithm)!;
+  const summary = algorithm.summary!;
 
   const timestamp = format(Date.parse(summary.timestamp), 'yyyy-MM-dd HH:mm:ss');
 

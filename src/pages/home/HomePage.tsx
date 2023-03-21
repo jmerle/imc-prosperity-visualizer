@@ -2,6 +2,7 @@ import { Code, Container, Stack, Text } from '@mantine/core';
 import { Prism } from '@mantine/prism';
 import { PrismScrollArea } from '../base/PrismScrollArea';
 import { HomeCard } from './HomeCard';
+import { LoadFromFile } from './LoadFromFile';
 import { LoadFromProsperity } from './LoadFromProsperity';
 
 export function HomePage(): JSX.Element {
@@ -68,6 +69,7 @@ class Trader:
           </Text>
         </HomeCard>
 
+        <LoadFromFile />
         <LoadFromProsperity />
       </Stack>
     </Container>

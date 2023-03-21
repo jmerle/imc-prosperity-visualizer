@@ -82,7 +82,7 @@ export interface SandboxLogRow {
 }
 
 export interface Algorithm {
-  summary: AlgorithmSummary;
+  summary?: AlgorithmSummary;
   activityLogs: ActivityLogRow[];
   sandboxLogs: SandboxLogRow[];
   submissionLogs: string;

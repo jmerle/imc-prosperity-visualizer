@@ -2,103 +2,13 @@ import { Accordion, Button, Group, MantineColor, Text } from '@mantine/core';
 import { Prism } from '@mantine/prism';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
-import { AlgorithmSummary, ActivityLogRow, SandboxLogRow } from '../../models';
+import { AlgorithmSummary } from '../../models';
 import { useStore } from '../../store';
-import { downloadAlgorithmResults } from '../../utils/algorithm';
+import { downloadAlgorithmResults, parseAlgorithmLogs } from '../../utils/algorithm';
 import { useAsync } from '../../utils/async';
 import { createAxios } from '../../utils/axios';
 import { PrismScrollArea } from '../base/PrismScrollArea';
 import { ErrorAlert } from './ErrorAlert';
-
-function getColumnValues(columns: string[], indices: number[]): number[] {
-  const values: number[] = [];
-
-  for (const index of indices) {
-    const value = columns[index];
-    if (value !== '') {
-      values.push(Number(value));
-    }
-  }
-
-  return values;
-}
-
-function getActivityLogs(logLines: string[]): ActivityLogRow[] {
-  const headerIndex = logLines.indexOf('Activities log:');
-  if (headerIndex === -1) {
-    return [];
-  }
-
-  const rows: ActivityLogRow[] = [];
-
-  for (let i = headerIndex + 2; i < logLines.length; i++) {
-    const columns = logLines[i].split(';');
-    rows.push({
-      day: Number(columns[0]),
-      timestamp: Number(columns[1]),
-      product: columns[2],
-      bidPrices: getColumnValues(columns, [3, 5, 7]),
-      bidVolumes: getColumnValues(columns, [4, 6, 8]),
-      askPrices: getColumnValues(columns, [9, 11, 13]),
-      askVolumes: getColumnValues(columns, [10, 12, 14]),
-      midPrice: Number(columns[15]),
-      profitLoss: Number(columns[16]),
-    });
-  }
-
-  return rows;
-}
-
-function getSandboxLogs(logLines: string[]): SandboxLogRow[] {
-  const headerIndex = logLines.indexOf('Sandbox logs:');
-  if (headerIndex === -1) {
-    return [];
-  }
-
-  const rows: SandboxLogRow[] = [];
-  for (let i = headerIndex + 1; i < logLines.length; i++) {
-    const line = logLines[i];
-    if (line.endsWith(':')) {
-      break;
-    }
-
-    if (line.startsWith('{')) {
-      rows.push(JSON.parse(line));
-      continue;
-    }
-
-    if (line.length === 0 || line.endsWith(' ') || !/\d/.test(line[0])) {
-      continue;
-    }
-
-    const unparsed = line.substring(line.indexOf(' ') + 1);
-    if (unparsed[0] !== '{') {
-      continue;
-    }
-
-    rows.push(JSON.parse(unparsed));
-  }
-
-  return rows;
-}
-
-function getSubmissionLogs(logLines: string[]): string {
-  const headerIndex = logLines.indexOf('Submission logs:');
-  if (headerIndex === -1) {
-    return '';
-  }
-
-  const lines = [];
-  for (let i = headerIndex + 1; i < logLines.length; i++) {
-    if (logLines[i].endsWith(':')) {
-      break;
-    }
-
-    lines.push(logLines[i]);
-  }
-
-  return lines.join('\n').trimEnd();
-}
 
 export interface AlgorithmDetailProps {
   position: number;
@@ -132,17 +42,8 @@ export function AlgorithmDetail({ position, algorithm }: AlgorithmDetailProps): 
     const logsResponse = await axios.get(
       `https://bz97lt8b1e.execute-api.eu-west-1.amazonaws.com/prod/submission/logs/${algorithm.id}`,
     );
-    const logLines = logsResponse.data.trim().split('\n') as string[];
 
-    const activityLogs = getActivityLogs(logLines);
-    const sandboxLogs = getSandboxLogs(logLines);
-    const submissionLogs = getSubmissionLogs(logLines);
-
-    if (sandboxLogs.length === 0) {
-      throw new Error('Sandbox logs are in invalid format, please see the prerequisites section above.');
-    }
-
-    setAlgorithm({ summary: algorithm, activityLogs, sandboxLogs, submissionLogs });
+    setAlgorithm(parseAlgorithmLogs(logsResponse.data, algorithm));
     navigate('/visualizer');
   });
 
