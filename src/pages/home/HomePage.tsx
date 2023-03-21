@@ -8,7 +8,7 @@ export function HomePage(): JSX.Element {
   const exampleCode = `
 import json
 from datamodel import Order, ProsperityEncoder, TradingState, Symbol
-from typing import Any, Dict, List
+from typing import Any
 
 class Logger:
     def __init__(self) -> None:
@@ -17,7 +17,7 @@ class Logger:
     def print(self, *objects: Any, sep: str = " ", end: str = "\\n") -> None:
         self.logs += sep.join(map(str, objects)) + end
 
-    def flush(self, state: TradingState, orders: Dict[Symbol, List[Order]]) -> None:
+    def flush(self, state: TradingState, orders: dict[Symbol, list[Order]]) -> None:
         logs = self.logs
         if logs.endswith("\\n"):
             logs = logs[:-1]
@@ -35,7 +35,7 @@ class Logger:
 logger = Logger()
 
 class Trader:
-    def run(self, state: TradingState) -> Dict[Symbol, List[Order]]:
+    def run(self, state: TradingState) -> dict[Symbol, list[Order]]:
         orders = {}
 
         # TODO: Add logic
