@@ -17,15 +17,15 @@ export interface SandboxLogDetailProps {
 export function SandboxLogDetail({ row: { state, orders, logs } }: SandboxLogDetailProps): JSX.Element {
   const algorithm = useStore(state => state.algorithm)!;
 
-  const resultRow = algorithm.results.find(row => row.timestamp === state.timestamp);
-  const profitLoss = resultRow ? ` • Profit / Loss: ${formatNumber(resultRow.profitLoss)}` : '';
+  const profitLoss = algorithm.results
+    .filter(row => row.timestamp === state.timestamp)
+    .reduce((acc, val) => acc + val.profitLoss, 0);
 
   return (
     <Grid columns={12}>
       <Grid.Col span={12}>
         <Title order={5}>
-          Timestamp {formatNumber(state.timestamp)}
-          {profitLoss}
+          Timestamp {formatNumber(state.timestamp)} • Profit / Loss: {formatNumber(profitLoss)}
         </Title>
       </Grid.Col>
       <Grid.Col xs={12} sm={6}>
