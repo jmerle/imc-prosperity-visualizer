@@ -1,4 +1,5 @@
 import { Center, createStyles, Grid, Title, useMantineTheme } from '@mantine/core';
+import { useColorScheme } from '@mantine/hooks';
 import Highcharts from 'highcharts';
 import HighchartsAccessibility from 'highcharts/modules/accessibility';
 import HighchartsExporting from 'highcharts/modules/exporting';
@@ -43,9 +44,11 @@ export function VisualizerPage(): JSX.Element {
   // When you switch from dark to light it looks weird since the light theme sets fewer properties than the dark theme
   // This leads to some of the dark theme's properties staying active
   // We therefore only set the theme once, and require a page refresh to update the themes of the charts
-  const theme = useMantineTheme();
+  const theme = useStore(state => state.theme);
+  const preferredColorScheme = useColorScheme();
+  const colorScheme = theme === 'system' ? preferredColorScheme : theme;
   useEffect(() => {
-    if (theme.colorScheme === 'light') {
+    if (colorScheme === 'light') {
       HighchartsHighContrastLightTheme(Highcharts);
     } else {
       HighchartsHighContrastDarkTheme(Highcharts);
