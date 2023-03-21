@@ -121,18 +121,12 @@ class Logger:
         self.logs += sep.join(map(str, objects)) + end
 
     def flush(self, state: TradingState, orders: dict[Symbol, list[Order]]) -> None:
-        logs = self.logs
-        if logs.endswith("\\n"):
-            logs = logs[:-1]
-
         print(json.dumps({
             "state": state,
             "orders": orders,
-            "logs": logs,
+            "logs": self.logs,
         }, cls=ProsperityEncoder, separators=(",", ":"), sort_keys=True))
 
-        self.state = None
-        self.orders = {}
         self.logs = ""
 
 logger = Logger()
