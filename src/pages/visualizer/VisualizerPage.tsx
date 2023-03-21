@@ -47,13 +47,10 @@ export function VisualizerPage(): JSX.Element {
   const theme = useStore(state => state.theme);
   const preferredColorScheme = useColorScheme();
   const colorScheme = theme === 'system' ? preferredColorScheme : theme;
-  useEffect(() => {
-    if (colorScheme === 'light') {
-      HighchartsHighContrastLightTheme(Highcharts);
-    } else {
-      HighchartsHighContrastDarkTheme(Highcharts);
-    }
-  }, []);
+  HighchartsHighContrastLightTheme(Highcharts);
+  if (colorScheme === 'dark') {
+    HighchartsHighContrastDarkTheme(Highcharts);
+  }
 
   if (algorithm === null) {
     return <Navigate to="/" />;
