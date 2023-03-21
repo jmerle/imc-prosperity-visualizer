@@ -1,9 +1,8 @@
 import { Accordion, Button, Group, MantineColor, Text } from '@mantine/core';
 import { Prism } from '@mantine/prism';
-import defaultAxios from 'axios';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
-import { AlgorithmSummary, ResultRow, SandboxLogRow } from '../../models';
+import { AlgorithmSummary, ActivityLogRow, SandboxLogRow } from '../../models';
 import { useStore } from '../../store';
 import { downloadAlgorithmResults } from '../../utils/algorithm';
 import { useAsync } from '../../utils/async';
@@ -24,12 +23,17 @@ function getColumnValues(columns: string[], indices: number[]): number[] {
   return values;
 }
 
-function getResults(resultLines: string[]): ResultRow[] {
-  const results: ResultRow[] = [];
+function getActivityLogs(logLines: string[]): ActivityLogRow[] {
+  const headerIndex = logLines.indexOf('Activities log:');
+  if (headerIndex === -1) {
+    return [];
+  }
 
-  for (let i = 1; i < resultLines.length; i++) {
-    const columns = resultLines[i].split(';');
-    results.push({
+  const rows: ActivityLogRow[] = [];
+
+  for (let i = headerIndex + 2; i < logLines.length; i++) {
+    const columns = logLines[i].split(';');
+    rows.push({
       day: Number(columns[0]),
       timestamp: Number(columns[1]),
       product: columns[2],
@@ -42,7 +46,7 @@ function getResults(resultLines: string[]): ResultRow[] {
     });
   }
 
-  return results;
+  return rows;
 }
 
 function getSandboxLogs(logLines: string[]): SandboxLogRow[] {
@@ -84,7 +88,16 @@ function getSubmissionLogs(logLines: string[]): string {
     return '';
   }
 
-  return logLines.slice(headerIndex + 1).join('\n');
+  const lines = [];
+  for (let i = headerIndex + 1; i < logLines.length; i++) {
+    if (logLines[i].endsWith(':')) {
+      break;
+    }
+
+    lines.push(logLines[i]);
+  }
+
+  return lines.join('\n').trimEnd();
 }
 
 export interface AlgorithmDetailProps {
@@ -93,7 +106,6 @@ export interface AlgorithmDetailProps {
 }
 
 export function AlgorithmDetail({ position, algorithm }: AlgorithmDetailProps): JSX.Element {
-  const corsProxy = useStore(state => state.corsProxy);
   const setAlgorithm = useStore(state => state.setAlgorithm);
 
   const navigate = useNavigate();
@@ -117,21 +129,12 @@ export function AlgorithmDetail({ position, algorithm }: AlgorithmDetailProps): 
   const openInVisualizer = useAsync<void>(async () => {
     const axios = createAxios();
 
-    const detailsResponse = await axios.get(
-      `https://bz97lt8b1e.execute-api.eu-west-1.amazonaws.com/prod/results/tutorial/${algorithm.id}`,
-    );
-
-    const resultsUrl = JSON.parse(detailsResponse.data).algo.summary.activitiesLog;
-    const resultsResponse = await defaultAxios.get(corsProxy + resultsUrl);
-
     const logsResponse = await axios.get(
       `https://bz97lt8b1e.execute-api.eu-west-1.amazonaws.com/prod/submission/logs/${algorithm.id}`,
     );
-
-    const resultLines = resultsResponse.data.trim().split('\n') as string[];
     const logLines = logsResponse.data.trim().split('\n') as string[];
 
-    const results = getResults(resultLines);
+    const activityLogs = getActivityLogs(logLines);
     const sandboxLogs = getSandboxLogs(logLines);
     const submissionLogs = getSubmissionLogs(logLines);
 
@@ -139,7 +142,7 @@ export function AlgorithmDetail({ position, algorithm }: AlgorithmDetailProps): 
       throw new Error('Sandbox logs are in invalid format, please see the prerequisites section above.');
     }
 
-    setAlgorithm({ summary: algorithm, results, sandboxLogs, submissionLogs });
+    setAlgorithm({ summary: algorithm, activityLogs, sandboxLogs, submissionLogs });
     navigate('/visualizer');
   });
 

@@ -6,7 +6,7 @@ export function ProfitLossChart(): JSX.Element {
   const algorithm = useStore(state => state.algorithm)!;
 
   const dataByTimestamp = new Map<number, number>();
-  for (const row of algorithm.results) {
+  for (const row of algorithm.activityLogs) {
     if (!dataByTimestamp.has(row.timestamp)) {
       dataByTimestamp.set(row.timestamp, row.profitLoss);
     } else {
@@ -27,7 +27,7 @@ export function ProfitLossChart(): JSX.Element {
     .forEach(symbol => {
       const data = [];
 
-      for (const row of algorithm.results) {
+      for (const row of algorithm.activityLogs) {
         if (row.product === symbol) {
           data.push([row.timestamp, row.profitLoss]);
         }

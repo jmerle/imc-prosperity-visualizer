@@ -6,7 +6,6 @@ import HighchartsExporting from 'highcharts/modules/exporting';
 import HighchartsOfflineExporting from 'highcharts/modules/offline-exporting';
 import HighchartsHighContrastDarkTheme from 'highcharts/themes/high-contrast-dark';
 import HighchartsHighContrastLightTheme from 'highcharts/themes/high-contrast-light';
-import { useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useStore } from '../../store';
 import { formatNumber } from '../../utils/format';
@@ -57,9 +56,9 @@ export function VisualizerPage(): JSX.Element {
   }
 
   let profitLoss = 0;
-  const lastTimestamp = algorithm.results[algorithm.results.length - 1].timestamp;
-  for (let i = algorithm.results.length - 1; i >= 0 && algorithm.results[i].timestamp == lastTimestamp; i--) {
-    profitLoss += algorithm.results[i].profitLoss;
+  const lastTimestamp = algorithm.activityLogs[algorithm.activityLogs.length - 1].timestamp;
+  for (let i = algorithm.activityLogs.length - 1; i >= 0 && algorithm.activityLogs[i].timestamp == lastTimestamp; i--) {
+    profitLoss += algorithm.activityLogs[i].profitLoss;
   }
 
   const symbolColumns: JSX.Element[] = [];

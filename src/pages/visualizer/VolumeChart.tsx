@@ -20,7 +20,7 @@ export function VolumeChart({ symbol }: VolumeChartProps): JSX.Element {
     { type: 'column', name: 'Ask 3', color: getAskColor(0.5), data: [] },
   ];
 
-  for (const row of algorithm.results) {
+  for (const row of algorithm.activityLogs) {
     if (row.product !== symbol) {
       continue;
     }

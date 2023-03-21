@@ -17,7 +17,7 @@ export interface SandboxLogDetailProps {
 export function SandboxLogDetail({ row: { state, orders, logs } }: SandboxLogDetailProps): JSX.Element {
   const algorithm = useStore(state => state.algorithm)!;
 
-  const profitLoss = algorithm.results
+  const profitLoss = algorithm.activityLogs
     .filter(row => row.timestamp === state.timestamp)
     .reduce((acc, val) => acc + val.profitLoss, 0);
 

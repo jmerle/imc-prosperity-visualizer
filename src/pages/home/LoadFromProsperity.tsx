@@ -1,4 +1,4 @@
-import { Button, Code, PasswordInput, Select, Text, TextInput } from '@mantine/core';
+import { Button, Code, PasswordInput, Select, Text } from '@mantine/core';
 import { AxiosResponse } from 'axios';
 import { FormEvent, useCallback, useRef } from 'react';
 import { AlgorithmSummary } from '../../models';
@@ -15,9 +15,6 @@ export function LoadFromProsperity(): JSX.Element {
 
   const round = useStore(state => state.round);
   const setRound = useStore(state => state.setRound);
-
-  const corsProxy = useStore(state => state.corsProxy);
-  const setCorsProxy = useStore(state => state.setCorsProxy);
 
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -63,25 +60,6 @@ export function LoadFromProsperity(): JSX.Element {
         The ID token is remembered locally for ease-of-use but only valid for a limited amount of time, so you&apos;ll need to update this field often.
       </Text>
 
-      <Text mt="xs">
-        When you open an algorithm in the visualizer the results CSV needs to be downloaded. This CSV is served without
-        an{' '}
-        <a
-          href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Access-Control-Allow-Origin
-        </a>{' '}
-        header, so a{' '}
-        <a href="https://github.com/Rob--W/cors-anywhere" target="_blank" rel="noreferrer">
-          CORS Anywhere
-        </a>{' '}
-        proxy is needed to make that work. By default a proxy provided by me (the creator of IMC Prosperity Visualizer)
-        is used. While I promise no results are persisted server-side, you are free to change this to a proxy hosted by
-        yourself. Your ID token is not sent through this proxy.
-      </Text>
-
       {loadAlgorithms.error && <ErrorAlert error={loadAlgorithms.error} mt="xs" />}
 
       <form onSubmit={onSubmit} ref={formRef}>
@@ -105,14 +83,6 @@ export function LoadFromProsperity(): JSX.Element {
             { value: 'ROUND4', label: 'Round 4' },
             { value: 'ROUND5', label: 'Round 5' },
           ]}
-          mt="xs"
-        />
-
-        <TextInput
-          label="CORS Anywhere proxy"
-          placeholder="CORS Anywhere proxy"
-          value={corsProxy}
-          onInput={e => setCorsProxy((e.target as HTMLInputElement).value)}
           mt="xs"
         />
 

@@ -27,7 +27,7 @@ export type Position = number;
 export type UserId = string;
 export type Observation = number;
 
-export interface ResultRow {
+export interface ActivityLogRow {
   day: number;
   timestamp: number;
   product: Product;
@@ -83,7 +83,7 @@ export interface SandboxLogRow {
 
 export interface Algorithm {
   summary: AlgorithmSummary;
-  results: ResultRow[];
+  activityLogs: ActivityLogRow[];
   sandboxLogs: SandboxLogRow[];
   submissionLogs: string;
 }
