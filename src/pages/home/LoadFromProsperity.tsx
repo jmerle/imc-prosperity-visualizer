@@ -59,7 +59,7 @@ export function LoadFromProsperity(): JSX.Element {
     <HomeCard title="Load from Prosperity">
       {/* prettier-ignore */}
       <Text>
-        Requires your Prosperity ID token that is stored in the <Code>CognitoIdentityServiceProvider.&lt;some id&gt;.&lt;email&gt;.idToken</Code> cookie on the Prosperity website.
+        Requires your Prosperity ID token that is stored in the <Code>CognitoIdentityServiceProvider.&lt;some id&gt;.&lt;email&gt;.idToken</Code> cookie and/or in the <Code>CognitoIdentityServiceProvider.&lt;some id&gt;.&lt;some id&gt;.idToken</Code> local storage item on the Prosperity website.
         The ID token is remembered locally for ease-of-use but only valid for a limited amount of time, so you&apos;ll need to update this field often.
       </Text>
 
