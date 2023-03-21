@@ -51,6 +51,7 @@ class Trader:
           {/* prettier-ignore */}
           <Text>
             IMC Prosperity Visualizer is a visualizer for <a href={`https://prosperity.imc.com/`} target="_blank" rel="noreferrer">IMC Prosperity</a> algorithms.
+            Its source code is available in the <a href={`https://github.com/jmerle/imc-prosperity-visualizer`} target="_blank" rel="noreferrer">jmerle/imc-prosperity-visualizer</a> GitHub repository.
             Load an algorithm below to get started.
           </Text>
         </HomeCard>
