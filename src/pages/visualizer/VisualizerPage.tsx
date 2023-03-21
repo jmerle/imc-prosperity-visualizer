@@ -9,6 +9,7 @@ import { useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useStore } from '../../store';
 import { formatNumber } from '../../utils/format';
+import { AlgorithmSummaryCard } from './AlgorithmSummaryCard';
 import { PositionChart } from './PositionChart';
 import { PriceChart } from './PriceChart';
 import { ProfitLossChart } from './ProfitLossChart';
@@ -98,6 +99,9 @@ export function VisualizerPage(): JSX.Element {
         </Grid.Col>
         <Grid.Col span={12}>
           <SubmissionLogsCard />
+        </Grid.Col>
+        <Grid.Col span={12}>
+          <AlgorithmSummaryCard />
         </Grid.Col>
       </Grid>
     </div>

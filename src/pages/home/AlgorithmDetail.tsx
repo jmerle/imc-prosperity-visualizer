@@ -3,8 +3,9 @@ import { Prism } from '@mantine/prism';
 import defaultAxios from 'axios';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
-import { AlgorithmSummary, SandboxLogRow, ResultRow } from '../../models';
+import { AlgorithmSummary, ResultRow, SandboxLogRow } from '../../models';
 import { useStore } from '../../store';
+import { downloadAlgorithmResults } from '../../utils/algorithm';
 import { useAsync } from '../../utils/async';
 import { createAxios } from '../../utils/axios';
 import { PrismScrollArea } from '../base/PrismScrollArea';
@@ -110,23 +111,7 @@ export function AlgorithmDetail({ position, algorithm }: AlgorithmDetailProps): 
   }
 
   const downloadResults = useAsync<void>(async () => {
-    const axios = createAxios();
-
-    const detailsResponse = await axios.get(
-      `https://bz97lt8b1e.execute-api.eu-west-1.amazonaws.com/prod/results/tutorial/${algorithm.id}`,
-    );
-
-    const resultsUrl = JSON.parse(detailsResponse.data).algo.summary.activitiesLog;
-
-    const link = document.createElement('a');
-    link.href = resultsUrl;
-    link.download = 'results.csv';
-    link.target = '_blank';
-    link.rel = 'noreferrer';
-
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
+    await downloadAlgorithmResults(algorithm.id);
   });
 
   const openInVisualizer = useAsync<void>(async () => {
@@ -150,7 +135,7 @@ export function AlgorithmDetail({ position, algorithm }: AlgorithmDetailProps): 
     const sandboxLogs = getSandboxLogs(logLines);
     const submissionLogs = getSubmissionLogs(logLines);
 
-    setAlgorithm({ results, sandboxLogs, submissionLogs });
+    setAlgorithm({ summary: algorithm, results, sandboxLogs, submissionLogs });
     navigate('/visualizer');
   });
 

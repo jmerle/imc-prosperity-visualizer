@@ -2,6 +2,24 @@ import { ColorScheme } from '@mantine/core';
 
 export type Theme = ColorScheme | 'system';
 
+export interface UserSummary {
+  id: number;
+  firstName: string;
+  lastName: string;
+}
+
+export interface AlgorithmSummary {
+  id: string;
+  content: string;
+  fileName: string;
+  round: string;
+  selectedForRound: boolean;
+  status: string;
+  teamId: string;
+  timestamp: string;
+  user: UserSummary;
+}
+
 export type Time = number;
 export type ProsperitySymbol = string;
 export type Product = string;
@@ -64,25 +82,8 @@ export interface SandboxLogRow {
 }
 
 export interface Algorithm {
+  summary: AlgorithmSummary;
   results: ResultRow[];
   sandboxLogs: SandboxLogRow[];
   submissionLogs: string;
-}
-
-export interface UserSummary {
-  id: number;
-  firstName: string;
-  lastName: string;
-}
-
-export interface AlgorithmSummary {
-  id: string;
-  content: string;
-  fileName: string;
-  round: string;
-  selectedForRound: boolean;
-  status: string;
-  teamId: string;
-  timestamp: string;
-  user: UserSummary;
 }
