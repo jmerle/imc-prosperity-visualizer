@@ -135,6 +135,10 @@ export function AlgorithmDetail({ position, algorithm }: AlgorithmDetailProps): 
     const sandboxLogs = getSandboxLogs(logLines);
     const submissionLogs = getSubmissionLogs(logLines);
 
+    if (sandboxLogs.length === 0) {
+      throw new Error('Sandbox logs are in invalid format, please see the prerequisites section above.');
+    }
+
     setAlgorithm({ summary: algorithm, results, sandboxLogs, submissionLogs });
     navigate('/visualizer');
   });

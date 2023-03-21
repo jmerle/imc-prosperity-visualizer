@@ -31,7 +31,7 @@ export function LoadFromProsperity(): JSX.Element {
       );
     } catch (err: any) {
       if (err.response?.status === 401) {
-        throw new Error('Invalid ID token');
+        throw new Error('ID token is invalid, please change it.');
       }
 
       throw err;
