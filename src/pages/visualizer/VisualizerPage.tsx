@@ -1,4 +1,4 @@
-import { Center, createStyles, Grid, Title, useMantineTheme } from '@mantine/core';
+import { Center, createStyles, Grid, Title } from '@mantine/core';
 import { useColorScheme } from '@mantine/hooks';
 import Highcharts from 'highcharts';
 import HighchartsAccessibility from 'highcharts/modules/accessibility';
