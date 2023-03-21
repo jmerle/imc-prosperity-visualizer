@@ -108,7 +108,7 @@ Error generating stack: `+o.message+`
 `),h=o9(f),l=s9(c),a=a9(c);if(l.length===0)throw new Error("Sandbox logs are in invalid format, please see the prerequisites section above.");n({summary:t,results:h,sandboxLogs:l,submissionLogs:a}),i("/visualizer")});return Pe(Sn.Item,{value:t.id,children:[he(Sn.Control,{children:Pe(je,{color:s,children:[Pe("b",{children:[e,"."]})," ",t.fileName," submitted at ",o," (",t.status,") ",t.selectedForRound?" (active)":""]})}),Pe(Sn.Panel,{children:[p.error&&he(AO,{error:p.error,mb:"xs"}),Pe(Du,{grow:!0,mb:"xs",children:[he(ji,{variant:"outline",component:"a",href:`https://bz97lt8b1e.execute-api.eu-west-1.amazonaws.com/prod/submission/logs/${t.id}`,download:!0,target:"_blank",rel:"noreferrer",children:"Download logs"}),he(ji,{variant:"outline",onClick:u.call,loading:u.loading,children:"Download results"}),t.status==="FINISHED"&&he(ji,{onClick:p.call,variant:"outline",ml:"xs",loading:p.loading,children:"Open in visualizer"})]}),Pe(je,{children:[he("b",{children:"Id:"})," ",t.id]}),Pe(je,{children:[he("b",{children:"File name:"})," ",t.fileName]}),Pe(je,{children:[he("b",{children:"Submitted at:"})," ",o]}),Pe(je,{children:[he("b",{children:"Submitted by:"})," ",t.user.firstName," ",t.user.lastName]}),Pe(je,{children:[he("b",{children:"Status:"})," ",t.status]}),Pe(je,{children:[he("b",{children:"Round:"})," ",t.round]}),Pe(je,{children:[he("b",{children:"Selected for round:"})," ",t.selectedForRound?"Yes":"No"]}),he(je,{children:he("b",{children:"Content:"})}),he(qr,{withLineNumbers:!0,language:"python",scrollAreaComponent:zs,children:t.content})]})]},t.id)}function c9({algorithms:e}){return e.length===0?he(je,{mt:"md",children:"No algorithms found"}):he(Sn,{variant:"contained",defaultValue:e[0].id,mt:"md",children:e.map((t,r)=>he(l9,{position:e.length-r,algorithm:t},r))})}function u9(){const e=tt(m=>m.idToken),t=tt(m=>m.setIdToken),r=tt(m=>m.round),n=tt(m=>m.setRound),i=tt(m=>m.corsProxy),o=tt(m=>m.setCorsProxy),s=Y.useRef(null),u=Xc(async()=>{var d;const m=hg();let E;try{E=await m.get(`https://bz97lt8b1e.execute-api.eu-west-1.amazonaws.com/prod/submission/algo/${r}`)}catch(g){throw((d=g.response)==null?void 0:d.status)===401?new Error("ID token is invalid, please change it."):g}return JSON.parse(E.data).sort((g,w)=>Date.parse(w.timestamp)-Date.parse(g.timestamp))}),p=Y.useCallback(m=>{m==null||m.preventDefault(),e.trim().length!==0&&u.call()},[u]);return Pe(fh,{title:"Load from Prosperity",children:[Pe(je,{children:["Requires your Prosperity ID token that is stored in the ",he(bc,{children:"CognitoIdentityServiceProvider.<some id>.<email>.idToken"})," cookie on the Prosperity website. The ID token is remembered locally for ease-of-use but only valid for a limited amount of time, so you'll need to update this field often."]}),Pe(je,{mt:"xs",children:["When you open an algorithm in the visualizer the results CSV needs to be downloaded. This CSV is served without an"," ",he("a",{href:"https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin",target:"_blank",rel:"noreferrer",children:"Access-Control-Allow-Origin"})," ","header, so a"," ",he("a",{href:"https://github.com/Rob--W/cors-anywhere",target:"_blank",rel:"noreferrer",children:"CORS Anywhere"})," ","proxy is needed to make that work. By default a proxy provided by me (the creator of IMC Prosperity Visualizer) is used. While I promise no results are persisted server-side, you are free to change this to a proxy hosted by yourself. Your ID token is not sent through this proxy."]}),u.error&&he(AO,{error:u.error,mt:"xs"}),Pe("form",{onSubmit:p,ref:s,children:[he(zP,{label:"ID token",placeholder:"ID token",value:e,onInput:m=>t(m.target.value),mt:"xs"}),he(nC,{label:"Round",value:r,onChange:m=>n(m),data:[{value:"ROUND0",label:"Tutorial"},{value:"ROUND1",label:"Round 1"},{value:"ROUND2",label:"Round 2"},{value:"ROUND3",label:"Round 3"},{value:"ROUND4",label:"Round 4"},{value:"ROUND5",label:"Round 5"}],mt:"xs"}),he(jP,{label:"CORS Anywhere proxy",placeholder:"CORS Anywhere proxy",value:i,onInput:m=>o(m.target.value),mt:"xs"}),he(ji,{fullWidth:!0,type:"submit",loading:u.loading,mt:"md",children:he("div",{children:"Load algorithms"})})]}),u.success&&he(c9,{algorithms:u.result})]})}function d9(){const e=`
 import json
 from datamodel import Order, ProsperityEncoder, TradingState, Symbol
-from typing import Any, Dict, List
+from typing import Any
 
 class Logger:
     def __init__(self) -> None:
@@ -117,7 +117,7 @@ class Logger:
     def print(self, *objects: Any, sep: str = " ", end: str = "\\n") -> None:
         self.logs += sep.join(map(str, objects)) + end
 
-    def flush(self, state: TradingState, orders: Dict[Symbol, List[Order]]) -> None:
+    def flush(self, state: TradingState, orders: dict[Symbol, list[Order]]) -> None:
         logs = self.logs
         if logs.endswith("\\n"):
             logs = logs[:-1]
@@ -135,7 +135,7 @@ class Logger:
 logger = Logger()
 
 class Trader:
-    def run(self, state: TradingState) -> Dict[Symbol, List[Order]]:
+    def run(self, state: TradingState) -> dict[Symbol, list[Order]]:
         orders = {}
 
         # TODO: Add logic
