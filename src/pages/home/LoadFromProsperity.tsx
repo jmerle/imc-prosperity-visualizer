@@ -60,11 +60,10 @@ export function LoadFromProsperity(): JSX.Element {
         The ID token is remembered locally for ease-of-use but only valid for a limited amount of time, so you&apos;ll need to update this field often.
       </Text>
 
-      {/* prettier-ignore */}
       <Text mt="xs">
-        IMC Prosperity Visualizer only uses your ID token to list your algorithms and to download algorithm logs and results.
-        It communicates directly with the API used by the Prosperity website and never sends data to other servers.
-        The ID token is cached in your browser&apos;s local storage and not accessible by other websites.
+        Your ID token is only used to list your algorithms and to download algorithm logs and results. This website
+        communicates directly with the API used by the Prosperity website and never sends data to other servers. The ID
+        token is cached in your browser&apos;s local storage and not accessible by other websites.
       </Text>
 
       {loadAlgorithms.error && <ErrorAlert error={loadAlgorithms.error} mt="xs" />}
