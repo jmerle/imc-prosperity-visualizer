@@ -8,7 +8,7 @@ import { LoadFromProsperity } from './LoadFromProsperity';
 export function HomePage(): JSX.Element {
   const exampleCode = `
 import json
-from datamodel import Order, ProsperityEncoder, TradingState, Symbol
+from datamodel import Order, ProsperityEncoder, Symbol, TradingState
 from typing import Any
 
 class Logger:
