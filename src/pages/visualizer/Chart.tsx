@@ -42,9 +42,11 @@ function getThemeOptions(theme: (highcharts: typeof Highcharts) => void): Highch
 interface ChartProps {
   title: string;
   series: Highcharts.SeriesOptionsType[];
+  min?: number;
+  max?: number;
 }
 
-export function Chart({ title, series }: ChartProps): JSX.Element {
+export function Chart({ title, series, min, max }: ChartProps): JSX.Element {
   const theme = useMantineTheme();
 
   const options = useMemo((): Highcharts.Options => {
@@ -85,6 +87,8 @@ export function Chart({ title, series }: ChartProps): JSX.Element {
       },
       yAxis: {
         allowDecimals: false,
+        min,
+        max,
       },
       tooltip: {
         split: true,
@@ -94,7 +98,7 @@ export function Chart({ title, series }: ChartProps): JSX.Element {
     };
 
     return merge(themeOptions, chartOptions);
-  }, [theme]);
+  }, [theme, min, max]);
 
   return (
     <VisualizerCard p={0}>
