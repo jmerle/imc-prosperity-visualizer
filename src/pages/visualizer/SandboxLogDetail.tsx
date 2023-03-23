@@ -8,6 +8,7 @@ import { ListingTable } from './ListingTable';
 import { OrderDepthTable } from './OrderDepthTable';
 import { OrderTable } from './OrderTable';
 import { PositionTable } from './PositionTable';
+import { ProfitLossTable } from './ProfitLossTable';
 import { TradeTable } from './TradeTable';
 
 export interface SandboxLogDetailProps {
@@ -28,13 +29,17 @@ export function SandboxLogDetail({ row: { state, orders, logs } }: SandboxLogDet
           Timestamp {formatNumber(state.timestamp)} • Profit / Loss: {formatNumber(profitLoss)}
         </Title>
       </Grid.Col>
-      <Grid.Col xs={12} sm={6}>
+      <Grid.Col xs={12} sm={4}>
         <Title order={5}>Listings</Title>
         <ListingTable listings={state.listings} />
       </Grid.Col>
-      <Grid.Col xs={12} sm={6}>
+      <Grid.Col xs={12} sm={4}>
         <Title order={5}>Positions</Title>
         <PositionTable position={state.position} />
+      </Grid.Col>
+      <Grid.Col xs={12} sm={4}>
+        <Title order={5}>Profit / Loss</Title>
+        <ProfitLossTable timestamp={state.timestamp} />
       </Grid.Col>
       {Object.keys(state.order_depths).map((symbol, i) => (
         <Grid.Col key={i} xs={12} sm={3}>
