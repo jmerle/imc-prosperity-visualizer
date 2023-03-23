@@ -87,7 +87,12 @@ function getSandboxLogs(logLines: string[]): SandboxLogRow[] {
       continue;
     }
 
-    rows.push(JSON.parse(unparsed));
+    try {
+      rows.push(JSON.parse(unparsed));
+    } catch (err) {
+      console.error(err);
+      throw new Error('Sandbox logs are in invalid format, please see the prerequisites section above.');
+    }
   }
 
   return rows;
@@ -118,7 +123,7 @@ export function parseAlgorithmLogs(logs: string, summary?: AlgorithmSummary): Al
   const sandboxLogs = getSandboxLogs(logLines);
   const submissionLogs = getSubmissionLogs(logLines);
 
-  if (sandboxLogs.length === 0) {
+  if (activityLogs.length === 0 || sandboxLogs.length === 0) {
     throw new Error('Sandbox logs are in invalid format, please see the prerequisites section above.');
   }
 
