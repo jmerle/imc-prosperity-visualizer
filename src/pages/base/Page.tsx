@@ -205,9 +205,6 @@ export function Page(): JSX.Element {
         <Center>
           <ThemeSwitch />
         </Center>
-        <Center mt="xs">
-          <Text>Refreshing is required after changing the theme for charts to have correct colors</Text>
-        </Center>
       </Box>
     </>
   );

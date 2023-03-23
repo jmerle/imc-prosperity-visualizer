@@ -1,11 +1,4 @@
 import { Center, createStyles, Grid, Title } from '@mantine/core';
-import { useColorScheme } from '@mantine/hooks';
-import Highcharts from 'highcharts';
-import HighchartsAccessibility from 'highcharts/modules/accessibility';
-import HighchartsExporting from 'highcharts/modules/exporting';
-import HighchartsOfflineExporting from 'highcharts/modules/offline-exporting';
-import HighchartsHighContrastDarkTheme from 'highcharts/themes/high-contrast-dark';
-import HighchartsHighContrastLightTheme from 'highcharts/themes/high-contrast-light';
 import { Navigate } from 'react-router-dom';
 import { useStore } from '../../store';
 import { formatNumber } from '../../utils/format';
@@ -16,10 +9,6 @@ import { ProfitLossChart } from './ProfitLossChart';
 import { SandboxLogsCard } from './SandboxLogsCard';
 import { SubmissionLogsCard } from './SubmissionLogsCard';
 import { VolumeChart } from './VolumeChart';
-
-HighchartsAccessibility(Highcharts);
-HighchartsExporting(Highcharts);
-HighchartsOfflineExporting(Highcharts);
 
 const useStyles = createStyles(theme => ({
   container: {
@@ -38,18 +27,6 @@ export function VisualizerPage(): JSX.Element {
   const { classes } = useStyles();
 
   const algorithm = useStore(state => state.algorithm);
-
-  // When you switch from light to dark everything's fine
-  // When you switch from dark to light it looks weird since the light theme sets fewer properties than the dark theme
-  // This leads to some of the dark theme's properties staying active
-  // We therefore only set the theme once, and require a page refresh to update the themes of the charts
-  const theme = useStore(state => state.theme);
-  const preferredColorScheme = useColorScheme();
-  const colorScheme = theme === 'system' ? preferredColorScheme : theme;
-  HighchartsHighContrastLightTheme(Highcharts);
-  if (colorScheme === 'dark') {
-    HighchartsHighContrastDarkTheme(Highcharts);
-  }
 
   if (algorithm === null) {
     return <Navigate to="/" />;
