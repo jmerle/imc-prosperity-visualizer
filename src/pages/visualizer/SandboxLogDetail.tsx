@@ -37,7 +37,7 @@ export function SandboxLogDetail({ row: { state, orders, logs } }: SandboxLogDet
         <PositionTable position={state.position} />
       </Grid.Col>
       {Object.keys(state.order_depths).map((symbol, i) => (
-        <Grid.Col key={i} xs={12} sm={6}>
+        <Grid.Col key={i} xs={12} sm={3}>
           <Title order={5}>{symbol} order depth</Title>
           <OrderDepthTable orderDepth={state.order_depths[symbol]} />
         </Grid.Col>
