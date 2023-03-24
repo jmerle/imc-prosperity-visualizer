@@ -12,6 +12,10 @@ function getLimit(algorithm: Algorithm, symbol: ProsperitySymbol): number {
       return 600;
     case 'PINA_COLADAS':
       return 300;
+    case 'DIVING_GEAR':
+      return 50;
+    case 'BERRIES':
+      return 250;
   }
 
   // This code will be hit when a new product is added to the competition and the visualizer isn't updated yet
