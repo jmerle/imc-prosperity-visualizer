@@ -3,6 +3,7 @@ import { Navigate } from 'react-router-dom';
 import { useStore } from '../../store';
 import { formatNumber } from '../../utils/format';
 import { AlgorithmSummaryCard } from './AlgorithmSummaryCard';
+import { ObservationChart } from './ObservationChart';
 import { PositionChart } from './PositionChart';
 import { PriceChart } from './PriceChart';
 import { ProfitLossChart } from './ProfitLossChart';
@@ -40,6 +41,7 @@ export function VisualizerPage(): JSX.Element {
 
   const symbolColumns: JSX.Element[] = [];
   Object.keys(algorithm.sandboxLogs[0].state.listings)
+    .filter(key => algorithm.sandboxLogs[0].state.observations[key] === undefined)
     .sort((a, b) => a.localeCompare(b))
     .forEach((symbol, i) => {
       symbolColumns.push(
@@ -54,6 +56,18 @@ export function VisualizerPage(): JSX.Element {
         </Grid.Col>,
       );
     });
+
+  const observationColumns = Object.keys(algorithm.sandboxLogs[0].state.observations)
+    .sort((a, b) => a.localeCompare(b))
+    .map((product, i) => (
+      <Grid.Col key={i} xs={12} sm={6}>
+        <ObservationChart product={product} />
+      </Grid.Col>
+    ));
+
+  if (observationColumns.length % 2 > 0) {
+    observationColumns.push(<Grid.Col key={observationColumns.length} span="auto" />);
+  }
 
   return (
     <div className={classes.container}>
@@ -70,6 +84,7 @@ export function VisualizerPage(): JSX.Element {
           <PositionChart />
         </Grid.Col>
         {symbolColumns}
+        {observationColumns}
         <Grid.Col span={12}>
           <SandboxLogsCard />
         </Grid.Col>
