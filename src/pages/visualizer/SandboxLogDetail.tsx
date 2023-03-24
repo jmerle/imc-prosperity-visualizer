@@ -53,7 +53,7 @@ export function SandboxLogDetail({ row: { state, orders, logs } }: SandboxLogDet
           <OrderDepthTable orderDepth={state.order_depths[symbol]} />
         </Grid.Col>
       ))}
-      {Object.keys(state.order_depths).length % orderDepthWidth > 0 && <Grid.Col span="auto" />}
+      {Object.keys(state.order_depths).length % (12 / orderDepthWidth) > 0 && <Grid.Col span="auto" />}
       <Grid.Col xs={12} sm={6}>
         <Title order={5}>Own trades</Title>
         {<TradeTable trades={state.own_trades} />}
