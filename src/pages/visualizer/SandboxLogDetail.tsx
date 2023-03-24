@@ -22,6 +22,12 @@ export function SandboxLogDetail({ row: { state, orders, logs } }: SandboxLogDet
     .filter(row => row.timestamp === state.timestamp)
     .reduce((acc, val) => acc + val.profitLoss, 0);
 
+  let orderDepthWidth = 3;
+  const orderDepthCount = Object.keys(state.order_depths).length;
+  if (orderDepthCount % 4 > 0 && orderDepthCount % 3 === 0) {
+    orderDepthWidth = 4;
+  }
+
   return (
     <Grid columns={12}>
       <Grid.Col span={12}>
@@ -42,12 +48,12 @@ export function SandboxLogDetail({ row: { state, orders, logs } }: SandboxLogDet
         <ProfitLossTable timestamp={state.timestamp} />
       </Grid.Col>
       {Object.keys(state.order_depths).map((symbol, i) => (
-        <Grid.Col key={i} xs={12} sm={3}>
+        <Grid.Col key={i} xs={12} sm={orderDepthWidth}>
           <Title order={5}>{symbol} order depth</Title>
           <OrderDepthTable orderDepth={state.order_depths[symbol]} />
         </Grid.Col>
       ))}
-      {Object.keys(state.order_depths).length % 4 > 0 && <Grid.Col span="auto" />}
+      {Object.keys(state.order_depths).length % orderDepthWidth > 0 && <Grid.Col span="auto" />}
       <Grid.Col xs={12} sm={6}>
         <Title order={5}>Own trades</Title>
         {<TradeTable trades={state.own_trades} />}
