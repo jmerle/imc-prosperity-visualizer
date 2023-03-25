@@ -10,6 +10,10 @@ export interface PositionTableProps {
 export function PositionTable({ position }: PositionTableProps): JSX.Element {
   const rows: JSX.Element[] = [];
   for (const product of Object.keys(position)) {
+    if (position[product] === 0) {
+      continue;
+    }
+
     const colorFunc = position[product] > 0 ? getBidColor : getAskColor;
 
     rows.push(
