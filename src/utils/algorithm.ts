@@ -83,7 +83,7 @@ function getSandboxLogs(logLines: string[]): SandboxLogRow[] {
     }
 
     const unparsed = line.substring(line.indexOf(' ') + 1);
-    if (unparsed[0] !== '{') {
+    if (!unparsed.startsWith('{"logs":"')) {
       continue;
     }
 
