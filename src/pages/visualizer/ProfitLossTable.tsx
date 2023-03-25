@@ -12,6 +12,7 @@ export function ProfitLossTable({ timestamp }: ProfitLossTableProps): JSX.Elemen
 
   const rows: JSX.Element[] = algorithm.activityLogs
     .filter(row => row.timestamp === timestamp)
+    .filter(row => algorithm.sandboxLogs[0].state.observations[row.product] === undefined)
     .sort((a, b) => a.product.localeCompare(b.product))
     .map(row => {
       let colorFunc: (alpha: number) => string = () => 'transparent';

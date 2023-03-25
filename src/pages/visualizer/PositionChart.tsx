@@ -33,7 +33,9 @@ function getLimit(algorithm: Algorithm, symbol: ProsperitySymbol): number {
 export function PositionChart(): JSX.Element {
   const algorithm = useStore(state => state.algorithm)!;
 
-  const symbols = Object.keys(algorithm.sandboxLogs[0].state.listings).sort((a, b) => a.localeCompare(b));
+  const symbols = Object.keys(algorithm.sandboxLogs[0].state.listings)
+    .filter(key => algorithm.sandboxLogs[0].state.observations[key] === undefined)
+    .sort((a, b) => a.localeCompare(b));
 
   const limits: Record<string, number> = {};
   for (const symbol of symbols) {

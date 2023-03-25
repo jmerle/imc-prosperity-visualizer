@@ -23,6 +23,7 @@ export function ProfitLossChart(): JSX.Element {
   ];
 
   Object.keys(algorithm.sandboxLogs[0].state.listings)
+    .filter(key => algorithm.sandboxLogs[0].state.observations[key] === undefined)
     .sort((a, b) => a.localeCompare(b))
     .forEach(symbol => {
       const data = [];
