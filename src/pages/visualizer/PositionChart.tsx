@@ -4,18 +4,21 @@ import { useStore } from '../../store';
 import { Chart } from './Chart';
 
 function getLimit(algorithm: Algorithm, symbol: ProsperitySymbol): number {
-  switch (symbol) {
-    case 'PEARLS':
-    case 'BANANAS':
-      return 20;
-    case 'COCONUTS':
-      return 600;
-    case 'PINA_COLADAS':
-      return 300;
-    case 'DIVING_GEAR':
-      return 50;
-    case 'BERRIES':
-      return 250;
+  const knownLimits: Record<string, number> = {
+    PEARLS: 20,
+    BANANAS: 20,
+    COCONUTS: 600,
+    PINA_COLADAS: 300,
+    DIVING_GEAR: 50,
+    BERRIES: 250,
+    BAGUETTE: 150,
+    DIP: 300,
+    UKULELE: 70,
+    PICNIC_BASKET: 70,
+  };
+
+  if (knownLimits[symbol] !== undefined) {
+    return knownLimits[symbol];
   }
 
   // This code will be hit when a new product is added to the competition and the visualizer isn't updated yet
