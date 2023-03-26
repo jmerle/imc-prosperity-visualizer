@@ -17,6 +17,7 @@ import { IconEye } from '@tabler/icons-react';
 import { useCallback } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { useStore } from '../../store';
+import { ScrollToTop } from './ScrollToTop';
 import { ThemeSwitch } from './ThemeSwitch';
 
 const HEADER_HEIGHT = 56;
@@ -166,6 +167,8 @@ export function Page(): JSX.Element {
 
   return (
     <>
+      <ScrollToTop />
+
       <Header height={HEADER_HEIGHT} className={classes.header}>
         <Container className={classes.container}>
           <span>
