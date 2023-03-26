@@ -1,4 +1,19 @@
-import { ActivityLogRow, Algorithm, AlgorithmSummary, SandboxLogRow } from '../models';
+import {
+  ActivityLogRow,
+  Algorithm,
+  AlgorithmSummary,
+  CompressedOrder,
+  CompressedSandboxLogRow,
+  CompressedTrade,
+  CompressedTradingState,
+  Listing,
+  Order,
+  OrderDepth,
+  ProsperitySymbol,
+  SandboxLogRow,
+  Trade,
+  TradingState,
+} from '../models';
 import { createAxios } from './axios';
 
 export async function downloadAlgorithmResults(algorithmId: string): Promise<void> {
@@ -60,6 +75,82 @@ function getActivityLogs(logLines: string[]): ActivityLogRow[] {
   return rows;
 }
 
+function decompressTrades(compressed: CompressedTrade[]): Record<ProsperitySymbol, Trade[]> {
+  const trades: Record<ProsperitySymbol, Trade[]> = {};
+
+  for (const trade of compressed) {
+    if (trades[trade[0]] === undefined) {
+      trades[trade[0]] = [];
+    }
+
+    trades[trade[0]].push({
+      symbol: trade[0],
+      buyer: trade[1],
+      seller: trade[2],
+      price: trade[3],
+      quantity: trade[4],
+      timestamp: trade[5],
+    });
+  }
+
+  return trades;
+}
+
+function decompressState(compressed: CompressedTradingState): TradingState {
+  const listings: Record<ProsperitySymbol, Listing> = {};
+  for (const listing of compressed.l) {
+    listings[listing[0]] = {
+      symbol: listing[0],
+      product: listing[1],
+      denomination: listing[2],
+    };
+  }
+
+  const order_depths: Record<ProsperitySymbol, OrderDepth> = {};
+  for (const symbol of Object.keys(compressed.od)) {
+    order_depths[symbol] = {
+      buy_orders: compressed.od[symbol][0],
+      sell_orders: compressed.od[symbol][1],
+    };
+  }
+
+  return {
+    timestamp: compressed.t,
+    listings,
+    order_depths,
+    own_trades: decompressTrades(compressed.ot),
+    market_trades: decompressTrades(compressed.mt),
+    position: compressed.p,
+    observations: compressed.o,
+  };
+}
+
+function decompressOrders(compressed: CompressedOrder[]): Record<ProsperitySymbol, Order[]> {
+  const orders: Record<ProsperitySymbol, Order[]> = {};
+
+  for (const order of compressed) {
+    if (orders[order[0]] === undefined) {
+      orders[order[0]] = [];
+    }
+
+    orders[order[0]].push({
+      symbol: order[0],
+      price: order[1],
+      quantity: order[2],
+    });
+  }
+
+  return orders;
+}
+
+function decompressSandboxLogRow(compressed: CompressedSandboxLogRow): SandboxLogRow {
+  return {
+    state: decompressState(compressed.state),
+    orders: decompressOrders(compressed.orders),
+    logs: compressed.logs,
+  };
+}
+
 function getSandboxLogs(logLines: string[]): SandboxLogRow[] {
   const headerIndex = logLines.indexOf('Sandbox logs:');
   if (headerIndex === -1) {
@@ -73,22 +164,32 @@ function getSandboxLogs(logLines: string[]): SandboxLogRow[] {
       break;
     }
 
+    let unparsed: string;
     if (line.startsWith('{')) {
-      rows.push(JSON.parse(line));
-      continue;
+      unparsed = line;
+    } else {
+      if (line.length === 0 || line.endsWith(' ') || !/\d/.test(line[0])) {
+        continue;
+      }
+
+      unparsed = line.substring(line.indexOf(' ') + 1);
     }
 
-    if (line.length === 0 || line.endsWith(' ') || !/\d/.test(line[0])) {
-      continue;
-    }
-
-    const unparsed = line.substring(line.indexOf(' ') + 1);
     if (!unparsed.startsWith('{"logs":"')) {
       continue;
     }
 
     try {
-      rows.push(JSON.parse(unparsed));
+      const parsed = JSON.parse(unparsed);
+
+      let row: SandboxLogRow;
+      if (parsed.state.t !== undefined) {
+        row = decompressSandboxLogRow(parsed);
+      } else {
+        row = parsed;
+      }
+
+      rows.push(row);
     } catch (err) {
       console.error(err);
       throw new Error('Sandbox logs are in invalid format, please see the prerequisites section above.');

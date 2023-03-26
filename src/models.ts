@@ -87,3 +87,34 @@ export interface Algorithm {
   sandboxLogs: SandboxLogRow[];
   submissionLogs: string;
 }
+
+export type CompressedListing = [symbol: ProsperitySymbol, product: Product, denomination: Product];
+
+export type CompressedOrderDepth = [buy_orders: Record<number, number>, sell_orders: Record<number, number>];
+
+export type CompressedTrade = [
+  symbol: ProsperitySymbol,
+  buyer: UserId,
+  seller: UserId,
+  price: number,
+  quantity: number,
+  timestamp: Time,
+];
+
+export interface CompressedTradingState {
+  t: Time;
+  l: CompressedListing[];
+  od: Record<ProsperitySymbol, CompressedOrderDepth>;
+  ot: CompressedTrade[];
+  mt: CompressedTrade[];
+  p: Record<Product, Position>;
+  o: Record<Product, Observation>;
+}
+
+export type CompressedOrder = [symbol: ProsperitySymbol, price: number, quantity: number];
+
+export interface CompressedSandboxLogRow {
+  state: CompressedTradingState;
+  orders: CompressedOrder[];
+  logs: string;
+}
