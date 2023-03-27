@@ -25,7 +25,7 @@ export function LoadFromElsewhere(): JSX.Element {
   const loadAlgorithm = useAsync(async (logsUrl: string): Promise<void> => {
     const logsResponse = await axios.get(logsUrl);
     setAlgorithm(parseAlgorithmLogs(logsResponse.data));
-    navigate('/visualizer');
+    navigate(`/visualizer?open=${logsUrl}`);
   });
 
   const onSubmit = useCallback(

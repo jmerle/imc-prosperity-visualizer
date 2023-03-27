@@ -1,5 +1,5 @@
 import { Center, createStyles, Grid, Title } from '@mantine/core';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useStore } from '../../store';
 import { formatNumber } from '../../utils/format';
 import { AlgorithmSummaryCard } from './AlgorithmSummaryCard';
@@ -29,8 +29,10 @@ export function VisualizerPage(): JSX.Element {
 
   const algorithm = useStore(state => state.algorithm);
 
+  const { search } = useLocation();
+
   if (algorithm === null) {
-    return <Navigate to="/" />;
+    return <Navigate to={`/${search}`} />;
   }
 
   let profitLoss = 0;
