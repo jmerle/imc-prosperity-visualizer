@@ -1,5 +1,5 @@
 import { useMantineTheme } from '@mantine/core';
-import Highcharts from 'highcharts';
+import Highcharts from 'highcharts/highstock';
 import HighchartsAccessibility from 'highcharts/modules/accessibility';
 import HighchartsExporting from 'highcharts/modules/exporting';
 import HighchartsOfflineExporting from 'highcharts/modules/offline-exporting';
@@ -54,6 +54,7 @@ export function Chart({ title, series, min, max }: ChartProps): JSX.Element {
 
     const chartOptions: Highcharts.Options = {
       chart: {
+        animation: false,
         height: 400,
         zooming: {
           type: 'x',
@@ -64,6 +65,28 @@ export function Chart({ title, series, min, max }: ChartProps): JSX.Element {
         },
         panKey: 'shift',
         numberFormatter: formatNumber,
+        events: {
+          load() {
+            Highcharts.addEvent(this.tooltip, 'headerFormatter', (e: any) => {
+              if (e.isFooter) {
+                return true;
+              }
+
+              let timestamp = e.labelConfig.point.x;
+
+              if (e.labelConfig.point.dataGroup) {
+                const xData = e.labelConfig.series.xData;
+                const lastTimestamp = xData[xData.length - 1];
+                if (timestamp + 100 * e.labelConfig.point.dataGroup.length >= lastTimestamp) {
+                  timestamp = lastTimestamp;
+                }
+              }
+
+              e.text = `Timestamp ${timestamp}`;
+              return false;
+            });
+          },
+        },
       },
       title: {
         text: title,
@@ -76,16 +99,38 @@ export function Chart({ title, series, min, max }: ChartProps): JSX.Element {
         sourceHeight: 800,
         allowHTML: true,
       },
+      plotOptions: {
+        series: {
+          dataGrouping: {
+            approximation(this: any, values: number[]): number {
+              const endIndex = this.dataGroupInfo.start + this.dataGroupInfo.length;
+              if (endIndex < this.xData.length) {
+                return values[0];
+              } else {
+                return values[values.length - 1];
+              }
+            },
+            anchor: 'start',
+            firstAnchor: 'firstPoint',
+            lastAnchor: 'lastPoint',
+            units: [['second', [1, 2, 5, 10]]],
+          },
+        },
+      },
       xAxis: {
-        type: 'linear',
+        type: 'datetime',
         title: {
           text: 'Timestamp',
         },
         crosshair: {
           width: 1,
         },
+        labels: {
+          formatter: params => formatNumber(params.value as number),
+        },
       },
       yAxis: {
+        opposite: false,
         allowDecimals: false,
         min,
         max,
@@ -94,15 +139,27 @@ export function Chart({ title, series, min, max }: ChartProps): JSX.Element {
         split: true,
         valueDecimals: 0,
       },
+      legend: {
+        enabled: true,
+      },
+      rangeSelector: {
+        enabled: false,
+      },
+      navigator: {
+        enabled: false,
+      },
+      scrollbar: {
+        enabled: false,
+      },
       series,
     };
 
     return merge(themeOptions, chartOptions);
-  }, [theme, min, max]);
+  }, [theme, title, series, min, max]);
 
   return (
     <VisualizerCard p={0}>
-      <HighchartsReact highcharts={Highcharts} options={options} immutable={true} />
+      <HighchartsReact highcharts={Highcharts} constructorType={'stockChart'} options={options} immutable={true} />
     </VisualizerCard>
   );
 }

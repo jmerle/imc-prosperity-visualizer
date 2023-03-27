@@ -22,7 +22,7 @@ export function SandboxLogsCard(): JSX.Element {
   const [timestamp, setTimestamp] = useState(timestampMin);
 
   const marks: SliderProps['marks'] = [];
-  for (let i = timestampMin; i < timestampMax; i += 25000) {
+  for (let i = timestampMin; i < timestampMax; i += (timestampMax + 100) / 4) {
     marks.push({
       value: i,
       label: formatNumber(i),

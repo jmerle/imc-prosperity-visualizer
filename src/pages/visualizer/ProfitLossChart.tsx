@@ -38,7 +38,7 @@ export function ProfitLossChart(): JSX.Element {
         type: 'line',
         name: symbol,
         data,
-        dashStyle: 'Dot',
+        dashStyle: 'Dash',
       });
     });
 
