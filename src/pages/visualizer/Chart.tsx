@@ -82,7 +82,7 @@ export function Chart({ title, series, min, max }: ChartProps): JSX.Element {
                 }
               }
 
-              e.text = `Timestamp ${timestamp}`;
+              e.text = `Timestamp ${formatNumber(timestamp)}<br/>`;
               return false;
             });
           },
@@ -136,8 +136,9 @@ export function Chart({ title, series, min, max }: ChartProps): JSX.Element {
         max,
       },
       tooltip: {
-        split: true,
-        valueDecimals: 0,
+        split: false,
+        shared: true,
+        outside: true,
       },
       legend: {
         enabled: true,
