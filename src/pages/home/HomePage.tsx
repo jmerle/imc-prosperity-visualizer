@@ -2,6 +2,7 @@ import { Code, Container, Stack, Text } from '@mantine/core';
 import { Prism } from '@mantine/prism';
 import { PrismScrollArea } from '../base/PrismScrollArea';
 import { HomeCard } from './HomeCard';
+import { LoadFromElsewhere } from './LoadFromElsewhere';
 import { LoadFromFile } from './LoadFromFile';
 import { LoadFromProsperity } from './LoadFromProsperity';
 
@@ -107,6 +108,7 @@ class Trader:
 
         <LoadFromFile />
         <LoadFromProsperity />
+        <LoadFromElsewhere />
       </Stack>
     </Container>
   );

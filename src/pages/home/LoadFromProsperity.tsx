@@ -1,6 +1,6 @@
 import { Button, Code, PasswordInput, Select, Text } from '@mantine/core';
 import { AxiosResponse } from 'axios';
-import { FormEvent, useCallback, useRef } from 'react';
+import { FormEvent, useCallback } from 'react';
 import { AlgorithmSummary } from '../../models';
 import { useStore } from '../../store';
 import { useAsync } from '../../utils/async';
@@ -15,8 +15,6 @@ export function LoadFromProsperity(): JSX.Element {
 
   const round = useStore(state => state.round);
   const setRound = useStore(state => state.setRound);
-
-  const formRef = useRef<HTMLFormElement>(null);
 
   const loadAlgorithms = useAsync<AlgorithmSummary[]>(async (): Promise<AlgorithmSummary[]> => {
     const axios = createAxios();
@@ -43,11 +41,9 @@ export function LoadFromProsperity(): JSX.Element {
     (event?: FormEvent<HTMLFormElement>) => {
       event?.preventDefault();
 
-      if (idToken.trim().length === 0) {
-        return;
+      if (idToken.trim().length > 0) {
+        loadAlgorithms.call();
       }
-
-      loadAlgorithms.call();
     },
     [loadAlgorithms],
   );
@@ -68,7 +64,7 @@ export function LoadFromProsperity(): JSX.Element {
 
       {loadAlgorithms.error && <ErrorAlert error={loadAlgorithms.error} mt="xs" />}
 
-      <form onSubmit={onSubmit} ref={formRef}>
+      <form onSubmit={onSubmit}>
         <PasswordInput
           label="ID token"
           placeholder="ID token"
