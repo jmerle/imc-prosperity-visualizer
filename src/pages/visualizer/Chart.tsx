@@ -94,11 +94,6 @@ export function Chart({ title, series, min, max }: ChartProps): JSX.Element {
       credits: {
         href: 'javascript:window.open("https://www.highcharts.com/?credits", "_blank")',
       },
-      exporting: {
-        sourceWidth: 1600,
-        sourceHeight: 800,
-        allowHTML: true,
-      },
       plotOptions: {
         series: {
           dataGrouping: {
