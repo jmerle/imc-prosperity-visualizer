@@ -9,28 +9,24 @@ export interface TradeTableProps {
 
 export function TradeTable({ trades }: TradeTableProps): JSX.Element {
   const rows: JSX.Element[] = [];
-  for (const symbol of Object.keys(trades)) {
+  for (const symbol of Object.keys(trades).sort((a, b) => a.localeCompare(b))) {
     for (let i = 0; i < trades[symbol].length; i++) {
       const trade = trades[symbol][i];
 
-      let type: string;
       let color: string;
-
-      if (trade.buyer !== '') {
-        type = 'Buy';
+      if (trade.buyer === 'SUBMISSION') {
         color = getBidColor(0.1);
-      } else if (trade.seller !== '') {
-        type = 'Sell';
+      } else if (trade.seller === 'SUBMISSION') {
         color = getAskColor(0.1);
       } else {
-        type = 'Unknown';
         color = 'transparent';
       }
 
       rows.push(
         <tr key={`${symbol}-${i}`} style={{ backgroundColor: color }}>
           <td>{trade.symbol}</td>
-          <td>{type}</td>
+          <td>{trade.buyer}</td>
+          <td>{trade.seller}</td>
           <td>{formatNumber(trade.price)}</td>
           <td>{formatNumber(trade.quantity)}</td>
           <td>{formatNumber(trade.timestamp)}</td>
@@ -39,5 +35,7 @@ export function TradeTable({ trades }: TradeTableProps): JSX.Element {
     }
   }
 
-  return <SimpleTable label="trades" columns={['Symbol', 'Type', 'Price', 'Quantity', 'Timestamp']} rows={rows} />;
+  return (
+    <SimpleTable label="trades" columns={['Symbol', 'Buyer', 'Seller', 'Price', 'Quantity', 'Timestamp']} rows={rows} />
+  );
 }
